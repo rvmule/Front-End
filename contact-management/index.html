@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+    <h2>Contact Form</h2>
+
+    <form id="CForm">
+        <fieldset id="identification">
+            <legend><b>Personal information:</b></legend>
+            First Name:<br>
+            <input type="text" name="Firstname" id="iden-firstname">
+            <br><br>
+
+            Last Name:<br>
+            <input type="text" name="Lastname" id="iden-lastname">
+            <br><br>
+
+            Date of Birth:<br>
+            <input type="date" name="DOB" id="iden-dob">
+            <br><br>
+
+            Gender:<br>
+            <input type="radio" name="gender" value="Male"> Male<br>
+            <input type="radio" name="gender" value="Female"> Female<br>
+            <br><br>
+
+            Tittle:<br>
+            <input type="text" name="Tittle" id="iden-tittle">
+            <br>
+        </fieldset>
+        <br><br><br>
+
+        <fieldset id="address">
+            <legend><b>Address:</b></legend>
+            House Type:<br>
+            <input type="text" name="type" id="add-type">
+            <br><br>
+
+            Number:<br>
+            <input type="number" name="number" id="add-number">
+            <br><br>
+
+            Street:<br>
+            <input type="text" name="street" id="add-street">
+            <br><br>
+
+            Unit:<br>
+            <input type="number" name="Unit" id="add-unit">
+            <br><br>
+
+            City:<br>
+            <input type="text" name="City" id="add-city">
+            <br><br>
+
+            State:<br>
+            <input type="text" name="State" id="add-state">
+            <br><br>
+
+            Zipcode:<br>
+            <input type="number" name="Zipcode" id="add-zipcode">
+            <br><br>
+        </fieldset>
+        <br><br><br>
+
+        <fieldset id="communication">
+            <legend><b>Communication:</b></legend>
+            Email:<br>
+            <input type="email" name="email" id="commu-email">
+            <br><br>
+            Preferred:<br>
+            <input type="radio" name="ePrefer" value="true" id="commu-e1"> Yes<br>
+            <input type="radio" name="ePrefer" value="false" id="commu-e2"> No<br>
+            <br><br>
+
+            Phone Number:<br>
+            <input type="number" name="cell" id="commu-phNum">
+            <br><br>
+        </fieldset>
+        <br><br><br>
+
+        <input type="button" value="Submit" onclick="postForm()">
+    </form>
+
+    <script>
+        postForm = function () {
+            var data = {
+                "Identification": {},
+                "Address": [],
+                "Communication": []
+            },
+                form = document.forms['CForm'],
+                addObj = {},
+                emailObj = {},
+                phObj = {};
+
+            for (var i = 0; i < form.elements.length; i++) {
+                var elm = form.elements[i];
+                if (elm.name && elm.id) {
+                    if (elm.id.indexOf('iden') >= 0) {
+                        data.Identification[elm.name] = elm.value;
+                    } else if (elm.id.indexOf('add') >= 0) {
+                        addObj[elm.name] = elm.value;
+                    } else if (elm.id.indexOf('commu') >= 0) {
+                        if (elm.name.indexOf('email') >= 0) {
+                            emailObj['type'] = elm.name;
+                            emailObj['value'] = elm.value;
+                        } else if (elm.name.indexOf('ePrefer') >= 0) {
+                            emailObj['preferred'] = elm.value;
+                        } else if (elm.name.indexOf('cell') >= 0) {
+                            phObj['type'] = elm.name;
+                            phObj['value'] = elm.value;
+                        }
+                    }
+                }
+
+            }
+            data.Address.push(addObj);
+            data.Communication.push(emailObj);
+            data.Communication.push(phObj);
+            postData(data);
+        }
+
+        postData = function (data) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('post', 'http://192.168.0.8/api/contact', true);
+            xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            xhr.send(JSON.stringify(data));
+        }
+    </script>
+
+</body>
+
+</html>
